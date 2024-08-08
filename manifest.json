@@ -23,7 +23,8 @@
         {
         "matches": ["https://meroshare.cdsc.com.np/*"],
         "js": ["contentScript.js"],
-        "css":["src/css/style.css"]
+        "css":["src/css/style.css"],
+        "type": "module"
         }
     ],
     "content_security_policy": {

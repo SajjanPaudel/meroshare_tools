@@ -1,4 +1,8 @@
 /* Base styles */
+.sidebar{
+  width: 20px;
+}
+
 .issue-container {
   position: absolute;
   padding: 20px;
