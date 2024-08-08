@@ -15,15 +15,15 @@
       "default_title": "Check Mero Share"
     },
     "icons": {
-      "16": "one.png",
-      "48": "money.png",
-      "128": "salary.png"
+      "16": "src/one.png",
+      "48": "src/money.png",
+      "128": "src/salary.png"
     },
     "content_scripts": [
         {
         "matches": ["https://meroshare.cdsc.com.np/*"],
         "js": ["contentScript.js"],
-        "css":["style.css"]
+        "css":["src/css/style.css"]
         }
     ],
     "content_security_policy": {
