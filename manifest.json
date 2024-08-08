@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "Mero Share Checker",
+    "version": "1.0",
+    "description": "Injects current issue data from Mero Share API into the page",
+    "permissions": [
+      "activeTab",
+      "scripting",
+      "storage"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_title": "Check Mero Share"
+    },
+    "icons": {
+      "16": "one.png",
+      "48": "money.png",
+      "128": "salary.png"
+    },
+    "content_scripts": [
+        {
+        "matches": ["https://meroshare.cdsc.com.np/*"],
+        "js": ["contentScript.js"],
+        "css":["style.css"]
+        }
+    ],
+    "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+    }
+
+
+}

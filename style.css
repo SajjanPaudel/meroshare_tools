@@ -1,0 +1,89 @@
+/* Base styles */
+.issue-container {
+  position: absolute;
+  padding: 20px;
+  top: 80px;
+  left: 242px; /* Sidebar width + margin */
+  background-color: #f9f9f9;
+  width: calc(100% - 242px); /* Full width minus sidebar */
+  max-width: 100%;
+  height: auto;
+  z-index: 100;
+  border: 1px solid #ccc;
+}
+.table_header {
+  padding: 10px 0;
+  text-align: center;
+  text-transform:uppercase;
+  font-weight: 800;
+  color: #f2f2f2 !important;
+  background-color: #333a56 !important;
+}
+
+.issue-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.issue-table th,
+.issue-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.issue-table th {
+  background-color: #f2f2f2;
+}
+
+/* Media Queries for responsiveness */
+
+/* For tablets and small desktops */
+@media (max-width: 990px) {
+  .issue-container {
+    width: calc(100% - 20px); /* Reduce margin for smaller screens */
+    left: 20px;
+    top: 80px;
+  }
+
+  .issue-table th,
+  .issue-table td {
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+/* For mobile phones */
+@media (max-width: 480px) {
+  .issue-container {
+    width: calc(100% - 20px); /* Reduce margin for mobile screens */
+    left: 10px;
+    top: 60px;
+    padding: 10px;
+  }
+
+  .issue-table th,
+  .issue-table td {
+    padding: 4px;
+    font-size: 12px;
+    display: block;
+    width: 100%;
+  }
+
+  .issue-table th {
+    display: none; /* Hide table headers on mobile */
+  }
+
+  .issue-table td {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .issue-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 10px;
+  }
+}
