@@ -3,27 +3,31 @@
     "name": "Mero Share Checker",
     "version": "1.0",
     "description": "Injects current issue data from Mero Share API into the page",
+    "host_permissions": [
+      "https://api.npstocks.com/*"
+    ],
     "permissions": [
       "activeTab",
       "scripting",
-      "storage"
+      "storage",
+      "background"
     ],
     "background": {
       "service_worker": "background.js"
     },
     "action": {
-      "default_title": "Check Mero Share"
+      "default_title": "Meroshare Tools"
     },
     "icons": {
-      "16": "src/one.png",
-      "48": "src/money.png",
-      "128": "src/salary.png"
+      "16": "src/meroshare-icon.png",
+      "48": "src/meroshare-icon.png",
+      "128": "src/meroshare-icon.png"
     },
     "content_scripts": [
         {
         "matches": ["https://meroshare.cdsc.com.np/*"],
-        "js": ["contentScript.js"],
-        "css":["src/css/style.css"],
+        "js": ["contentScript.js","src/js/jquery-3.6.0.min.js","src/js/dataTables.js","src/js/bootstrap.bundle.min.js"],
+        "css":["src/css/style.css","src/css/dataTables.css","src/css/bootstrap.min.css"],
         "type": "module"
         }
     ],
