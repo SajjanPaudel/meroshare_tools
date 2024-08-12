@@ -218,6 +218,9 @@
                 }
 
                 $('.issue-table').DataTable({
+                    'searching': false,
+                    'paging': false,
+                    'info': false,
                     // Add any DataTable options you need here
                 });
     

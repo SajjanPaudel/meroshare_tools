@@ -64,6 +64,10 @@ th{
   text-align: left;
 }
 
+thead{
+  border-top: 1px solid rgb(44, 43, 43) !important;
+}
+
 
 .issue-table th,
 .ipo_status_table th
