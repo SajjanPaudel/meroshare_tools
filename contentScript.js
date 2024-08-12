@@ -68,7 +68,7 @@
                     // console.log(data);
                     var lastDayPrice = data.totalValueAsOfPreviousClosingPrice;
                     var thisDayPrice = data.totalValueAsOfLastTransactionPrice;
-                    var gain = thisDayPrice-lastDayPrice ;
+                    var gain = (thisDayPrice-lastDayPrice).toFixed(2) ;
 
                     const colornew = thisDayPrice >= lastDayPrice ? 'bg-success' : 'bg-danger';
                     const gainOrLoss = thisDayPrice >= lastDayPrice ? 'Gain' : 'Loss';
@@ -77,7 +77,7 @@
                     const priceColor = thisDayPrice >= lastDayPrice ? 'text-success' : 'text-danger';
 
 
-                    const percentageChange = ((thisDayPrice-lastDayPrice)/lastDayPrice) *100
+                    const percentageChange = (((thisDayPrice-lastDayPrice)/lastDayPrice) *100).toFixed(2)
 
                     const kpiContainer = document.createElement('div');
                     kpiContainer.className = 'kpi-container';
@@ -174,7 +174,7 @@
                 kpicards(container);
     
                 const tableContainer = document.createElement('div');
-                tableContainer.className = 'table-container rounded shadow';  // New container for the table
+                tableContainer.className = 'table-container';  // New container for the table
     
                 const heading = document.createElement('h4');
                 heading.className = 'table_header mb-0 rounded';
@@ -182,7 +182,7 @@
                 tableContainer.appendChild(heading);
     
                 const table = document.createElement('table');
-                table.className = 'issue-table table table-bordered table-hover';
+                table.className = 'issue-table table';
     
                 const thead = document.createElement('thead');
                 thead.innerHTML = `
@@ -192,15 +192,6 @@
                         <th scope="col">Issue Close Date</th>
                     </tr>
                 `;
-                // thead.innerHTML = `
-                //     <tr>
-                //         <th scope="col">Scrip</th>
-                //         <th scope="col">Company Name</th>
-                //         <th scope="col">Type</th>
-                //         <th scope="col">Issue Open Date</th>
-                //         <th scope="col">Issue Close Date</th>
-                //     </tr>
-                // `;
                 table.appendChild(thead);
     
                 const tbody = document.createElement('tbody');
@@ -211,15 +202,9 @@
                         <td>${issue.reservationTypeName}</td>
                         <td>${issue.issueCloseDate}</td>
                     `;
-                    // row.innerHTML = `
-                    //     <td>${issue.scrip}</td>
-                    //     <td>${issue.companyName}</td>
-                    //     <td>${issue.reservationTypeName}</td>
-                    //     <td>${issue.issueOpenDate}</td>
-                    //     <td>${issue.issueCloseDate}</td>
-                    // `;
                     tbody.appendChild(row);
                 });
+
                 table.appendChild(tbody);
     
                 tableContainer.appendChild(table);
@@ -227,6 +212,14 @@
     
                 const fallbackView = document.querySelector('.fallback-view');
                 document.body.insertBefore(container, fallbackView);
+                // Initialize the DataTable after the table is fully constructed
+                if ($.fn.DataTable.isDataTable('.issue-table')) {
+                    $('.issue-table').DataTable().destroy();
+                }
+
+                $('.issue-table').DataTable({
+                    // Add any DataTable options you need here
+                });
     
                 // Now, fetch and populate the ipo_status table
                 fetchAndPopulateIpoStatusTable(container);
@@ -275,7 +268,7 @@
         .then(data => {
             if (data.object && data.object.length > 0) {
                 const ipoStatusContainer = document.createElement('div');
-                ipoStatusContainer.className = 'ipo_status_container  rounded bg-white shadow';
+                ipoStatusContainer.className = 'ipo_status_container';
     
                 const statusHeading = document.createElement('h4');
                 statusHeading.className = 'table_header rounded';
@@ -283,7 +276,7 @@
                 ipoStatusContainer.appendChild(statusHeading);
     
                 const statusTable = document.createElement('table');
-                statusTable.className = 'ipo_status_table table table-bordered';
+                statusTable.className = 'ipo_status_table table';
     
                 const statusThead = document.createElement('thead');
                 statusThead.innerHTML = `
@@ -292,7 +285,7 @@
                         <th scope="col">Company Name</th>
                         <th scope="col">Status Name</th>
                         <th scope="col">Meroshare Remark</th>
-                        <td scope="col">Date</td> <!-- Hidden column for sorting -->
+                        <td scope="col">Date</td>
                         <th scope="col">Expiration Date</th>
                         <th scope="col">Expired</th>
                     </tr>
@@ -359,15 +352,13 @@
                                 $('.ipo_status_table').DataTable().destroy();
                             }
                             // Initialize DataTables
-                            $(document).ready(function() {
-                                $('.ipo_status_table').DataTable({
-                                    "pageLength": 5,
-                                    "lengthMenu": [5, 10, 15, 20],
-                                    "order": [[4, "desc"]], // Sort by the hidden column (index 3) containing the original date
-                                    "columnDefs": [
-                                        { "targets": [4], "visible": false } // Hide the original date column
-                                    ]
-                                });
+                            $('.ipo_status_table').DataTable({
+                                "pageLength": 5,
+                                "lengthMenu": [5, 10, 15, 20],
+                                "order": [[4, "desc"]], // Sort by the hidden column (index 3) containing the original date
+                                "columnDefs": [
+                                    { "targets": [4], "visible": false } // Hide the original date column
+                                ]
                             });
                         }
                     })
