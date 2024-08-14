@@ -1,5 +1,5 @@
 (function() {
-    console.log(1)
+
     // Function to check if the first nav link is active
     function convertToKathmanduTime(utcDateString) {
         const utcDate = new Date(utcDateString);

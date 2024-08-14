@@ -4,13 +4,16 @@
     "version": "1.0",
     "description": "Injects current issue data from Mero Share API into the page",
     "host_permissions": [
-      "https://api.npstocks.com/*"
+      "https://dummyjson.com/*",
+      "https://meroshare.cdsc.com.np/*"
     ],
     "permissions": [
       "activeTab",
       "scripting",
       "storage",
-      "background"
+      "background",
+      "webNavigation",
+      "tabs"
     ],
     "background": {
       "service_worker": "background.js"
@@ -28,7 +31,8 @@
         "matches": ["https://meroshare.cdsc.com.np/*"],
         "js": ["contentScript.js","src/js/jquery-3.6.0.min.js","src/js/dataTables.js","src/js/bootstrap.bundle.min.js"],
         "css":["src/css/style.css","src/css/dataTables.css","src/css/bootstrap.min.css"],
-        "type": "module"
+        "type": "module",
+        "run_at": "document_end"
         }
     ],
     "content_security_policy": {
