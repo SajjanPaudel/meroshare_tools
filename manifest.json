@@ -37,7 +37,11 @@
     ],
     "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
-    }
+    },
+    "web_accessible_resources": [{
+        "resources": ["styles.css"],
+        "matches": ["<all_urls>"]
+    }]
 
 
 }

@@ -1,150 +1,234 @@
 /* Base styles */
-
-.sidebar{
+.sidebar {
   width: 20px;
 }
 
-.issue-container {
+.main-content-container {
   position: absolute;
-  padding: 20px;
-  top: 60px;
-  left: 242px; /* Sidebar width + margin */
-  background: #efefef;
-  width: calc(100% - 242px); /* Full width minus sidebar */
+  padding: 24px;
+  top: 100px;
+  left: var(--container-left, 242px);
+  background: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(20px);
+  width: calc(100% - var(--container-left, 242px));
   max-width: 100%;
   height: auto;
   z-index: 1;
+  transition: all 0.3s ease;
 }
 
-.table-container{
-    background: white;
-    padding: 10px;
+.table-container, .ipo_status_container {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
-.row > .col-xl-4{
+
+.table_header {
+  padding: 16px;
+  text-align: center;
+  font-weight: 500;
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-radius: 8px;
+  font-size: 17px;
+  letter-spacing: -0.022em;
+}
+
+.card-body {
+  padding: 20px !important;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.card-title {
+  color: #1d1d1f !important;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.022em;
+}
+
+/* Table styles */
+.issue-table th,
+.ipo_status_table th {
+  background-color: rgba(0, 0, 0, 0.02);
+  color: #1d1d1f;
+  font-weight: 500;
+  padding: 12px 16px;
+  font-size: 14px;
+  letter-spacing: -0.016em;
+}
+
+.issue-table td,
+.ipo_status_table td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 12px 16px;
+  color: #424245;
+  font-size: 14px;
+}
+
+/* Status colors */
+td.bg-success {
+  background-color: rgba(52, 199, 89, 0.1) !important;
+  color: #1d1d1f !important;
+}
+
+td.bg-danger {
+  background-color: rgba(255, 59, 48, 0.1) !important;
+  color: #1d1d1f !important;
+}
+
+.text-success {
+  color: rgb(52, 199, 89) !important;
+}
+
+.text-danger {
+  color: rgb(255, 59, 48) !important;
+}
+
+.row > .col-xl-4 {
   padding-left: 0 !important;
 }
 
-
 .table_header {
-  padding: 10px 0;
+  padding: 12px 0;
   text-align: center;
-  /* text-transform:uppercase; */
-  font-weight: 800;
-  color: #f2f2f2 !important;
-  background-color: #333a56 !important;
+  font-weight: 600;
+  color: #495057;
+  background-color: #e9ecef !important;
+  border-radius: 6px;
 }
 
-th{
-  font-weight: 800;
+th {
+  font-weight: 600;
   font-size: 1rem;
-  text-align: left !important
+  text-align: left !important;
+  color: #495057;
 }
 
-.issue-table {
+.issue-table, .ipo_status_table {
   width: 100%;
   border-collapse: collapse;
 }
 
 .ipo_status_container {
   margin-top: 20px;
-  padding: 10px;
+  padding: 15px;
   background: white;
-}
-.ipo_status_table {
-  width: 100%;
-  border-collapse: collapse;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .issue-table th,
 .issue-table td,
 .ipo_status_table th,
 .ipo_status_table td {
-  border: 1px solid #ccc;
-  padding: 8px;
+  border: 1px solid #dee2e6;
+  padding: 12px;
   text-align: left;
 }
 
-thead{
-  border-top: 1px solid rgb(44, 43, 43) !important;
+thead {
+  border-top: 1px solid #dee2e6 !important;
 }
-
 
 .issue-table th,
-.ipo_status_table th
- {
-  background-color: #f2f2f2;
+.ipo_status_table th {
+  background-color: #f8f9fa;
 }
 
-.kpi-container{
+.kpi-container {
   margin-bottom: 20px;
 }
 
 .card-body {
-  padding: 10px !important;
+  padding: 15px !important;
+  background: white;
+  border-radius: 8px;
 }
 
-.card-title{
-  background: #333a56;
-  padding: 10px;
+.card-title {
+  background: #e9ecef;
+  padding: 12px;
   border-radius: 5px;
-  color: white !important;
+  color: #495057 !important;
 }
 
-.dt-layout-row{
+.dt-layout-row {
   overflow-x: auto !important;
 }
 
-/* Media Queries for responsiveness */
+/* Status colors - More vibrant */
+td.bg-success {
+  background-color: #00a65a !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
 
-/* For tablets and small desktops */
+td.bg-danger {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.text-success {
+  color: #00a65a !important;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+/* Table headers - More prominent */
+.table_header {
+  background-color: #2c3e50 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Table styling */
+.issue-table th,
+.ipo_status_table th {
+  background-color: #34495e !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card styling */
+.card-title {
+  background-color: #2c3e50 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* Hover effects */
+.issue-table tr:hover,
+.ipo_status_table tr:hover {
+  background-color: rgba(0, 0, 0, 0.075) !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Media queries remain unchanged */
 @media (max-width: 990px) {
-  .issue-container ,
-  .ipo_status_table
-  {
-    width: calc(100% - 20px); /* Reduce margin for smaller screens */
-    left: 20px;
-    top: 80px;
-  }
-
-  .issue-table th,
-  .issue-table td {
-    padding: 6px;
-    font-size: 14px;
+  .main-content-container {
+      --container-left: 20px;
+      width: calc(100% - 40px);
   }
 }
-/* For mobile phones */
+
 @media (max-width: 480px) {
-  .issue-container,
-  .ipo_status_table
-  {
-    width: calc(100% - 20px); /* Reduce margin for mobile screens */
-    left: 10px;
-    top: 60px;
-    padding: 10px;
-  }
-
-  .issue-table th,
-  .issue-table td {
-    padding: 4px;
-    font-size: 12px;
-    display: block;
-    width: 100%;
-  }
-
-  .issue-table th {
-    display: none; /* Hide table headers on mobile */
-  }
-
-  .issue-table td {
-    display: flex;
-    justify-content: space-between;
-    border: none;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .issue-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    margin-right: 10px;
+  .main-content-container {
+      --container-left: 10px;
+      width: calc(100% - 20px);
+      top: 60px;
   }
 }

@@ -7,13 +7,21 @@
     }
 
     function checkNavLink() {
+        // Check if we're on the correct URL
+        if (window.location.href !== 'https://meroshare.cdsc.com.np/#/dashboard') {
+            // If not on dashboard, remove the container if it exists
+            const existingContainer = document.querySelector('.main-content-container');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+            return;
+        }
+    
         // Select the first nav-link element
         const firstNavLink = document.querySelector('.nav-item:first-child .nav-link');
-
         // Select the content container
-        const existingContainer = document.querySelector('.issue-container');
-
-
+        const existingContainer = document.querySelector('.main-content-container');
+    
         // Check if the nav-link has the 'active' class
         if (firstNavLink && firstNavLink.classList.contains('active')) {
             // Show content if not already displayed
@@ -29,6 +37,12 @@
     }
     function kpicards(container) {
         const authToken = sessionStorage.getItem('Authorization');
+        
+        if (!authToken) {
+            console.error('Authorization token not found');
+            return;
+        }
+    
         fetch('https://webbackend.cdsc.com.np/api/meroShare/ownDetail/',{
             headers: {
                 'Content-Type': 'application/json',
@@ -134,12 +148,25 @@
         })
         .catch(error => {
             console.error('Error fetching KPI data:', error);
-            alert('Failed to retrieve KPI data.');
+            // Remove the alert and replace with an error message in the container
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-warning';
+            errorDiv.textContent = 'Portfolio data temporarily unavailable';
+            container.insertBefore(errorDiv, container.firstChild);
         });
     }
 
     // Function to create and insert content
     function createAndInsertContent() {
+        const container = document.createElement('div');
+        container.className = 'main-content-container';
+        
+        // Create a separate container for KPI cards
+        const kpiSection = document.createElement('div');
+        kpiSection.className = 'kpi-section';
+        container.appendChild(kpiSection);
+        kpicards(kpiSection);
+
         const url = 'https://webbackend.cdsc.com.np/api/meroShare/companyShare/currentIssue';
         const payload = {
             "filterFieldParams": [
@@ -169,21 +196,18 @@
         .then(response => response.json())
         .then(data => {
             if (data.object && data.object.length > 0) {
-                const container = document.createElement('div');
-                container.className = 'issue-container';
-                kpicards(container);
-    
+                // Remove duplicate container creation
                 const tableContainer = document.createElement('div');
-                tableContainer.className = 'table-container';  // New container for the table
-    
+                tableContainer.className = 'table-container';
+                
                 const heading = document.createElement('h4');
                 heading.className = 'table_header mb-0 rounded';
                 heading.textContent = "IPO's that are open currently";
                 tableContainer.appendChild(heading);
-    
+        
                 const table = document.createElement('table');
                 table.className = 'issue-table table';
-    
+        
                 const thead = document.createElement('thead');
                 thead.innerHTML = `
                     <tr>
@@ -193,7 +217,7 @@
                     </tr>
                 `;
                 table.appendChild(thead);
-    
+        
                 const tbody = document.createElement('tbody');
                 data.object.forEach(issue => {
                     const row = document.createElement('tr');
@@ -204,36 +228,58 @@
                     `;
                     tbody.appendChild(row);
                 });
-
+        
                 table.appendChild(tbody);
-    
+        
                 tableContainer.appendChild(table);
                 container.appendChild(tableContainer);
-    
+        
                 const fallbackView = document.querySelector('.fallback-view');
                 document.body.insertBefore(container, fallbackView);
-                // Initialize the DataTable after the table is fully constructed
+                
+                // Check if DataTable is already initialized and destroy it
                 if ($.fn.DataTable.isDataTable('.issue-table')) {
                     $('.issue-table').DataTable().destroy();
                 }
-
+                
+                // Initialize DataTable
+                // In createAndInsertContent function, update the DataTable initialization:
                 $('.issue-table').DataTable({
                     'searching': false,
                     'paging': false,
                     'info': false,
-                    // Add any DataTable options you need here
+                    'scrollY': '300px',
+                    'scrollCollapse': true,
+                    'order': []  // Disable initial sorting
                 });
-    
-                // Now, fetch and populate the ipo_status table
+                
+                // In fetchAndPopulateIpoStatusTable function, update the DataTable initialization:
+                $('.ipo_status_table').DataTable({
+                    'paging': false,
+                    'scrollCollapse': true,
+                    'scrollY': '200px',
+                    'searching': false
+                });
+                
                 fetchAndPopulateIpoStatusTable(container);
-    
-            } else {
+            } 
+            else {
                 alert('No current issues found.');
             }
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            alert('Failed to retrieve data.');
+            const container = document.createElement('div');
+            container.className = 'main-content-container'; // Changed from issue-container
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-warning';
+            errorDiv.textContent = 'Unable to load current IPO data.';
+            container.appendChild(errorDiv);
+            
+            const fallbackView = document.querySelector('.fallback-view');
+            document.body.insertBefore(container, fallbackView);
+            fetchAndPopulateIpoStatusTable(container);
         });
     }
     
@@ -272,19 +318,18 @@
             if (data.object && data.object.length > 0) {
                 const ipoStatusContainer = document.createElement('div');
                 ipoStatusContainer.className = 'ipo_status_container';
-    
+        
                 const statusHeading = document.createElement('h4');
                 statusHeading.className = 'table_header rounded';
                 statusHeading.textContent = "Last Applied IPO Status";
                 ipoStatusContainer.appendChild(statusHeading);
-    
+        
                 const statusTable = document.createElement('table');
                 statusTable.className = 'ipo_status_table table';
-    
+        
                 const statusThead = document.createElement('thead');
                 statusThead.innerHTML = `
                     <tr>
-                        <th scope="col">Scrip</th>
                         <th scope="col">Company Name</th>
                         <th scope="col">Status Name</th>
                         <th scope="col">Meroshare Remark</th>
@@ -294,12 +339,12 @@
                     </tr>
                 `;
                 statusTable.appendChild(statusThead);
-    
+        
                 const statusTbody = document.createElement('tbody');
-    
+        
                 let itemsProcessed = 0;
                 const totalItems = data.object.length;
-    
+        
                 data.object.forEach(item => {
                     fetch(`https://webbackend.cdsc.com.np/api/meroShare/applicantForm/report/detail/${item.applicantFormId}`, {
                         method: 'GET',
@@ -330,18 +375,18 @@
                         if (separatorIndex !== -1) {
                             extractedText = remark.substring(separatorIndex + separator.length).trim();
                         }
-                        const rowColor = detail.statusName === 'Alloted' ? 'bg-success' : 'bg-danger'
-                        const rowColorStatus = icon === 'No' ? 'bg-success' : 'bg-danger'
-
+                        // Update the row colors in fetchAndPopulateIpoStatusTable
+                        const rowColor = detail.statusName === 'Alloted' ? 'bg-success text-white' : 'bg-danger text-white';
+                        const rowColorStatus = icon === 'No' ? 'bg-success text-white' : 'bg-danger text-white';
+                        
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td class = ${rowColor}>${scripName}</td>
-                            <td class = ${rowColor}>${companyName}</td>
-                            <td class = ${rowColor}>${detail.statusName}</td>
-                            <td class = ${rowColor}>${extractedText}</td>
-                            <td class = ${rowColor} style="display:none;">${originalDate}</td>
-                            <td class = ${rowColor} style="text-align:left;">${dateOnly}</td>
-                            <td class = ${rowColorStatus}>${icon}</td>
+                            <td class="${rowColor}">${companyName}</td>
+                            <td class="${rowColor}">${detail.statusName}</td>
+                            <td class="${rowColor}">${extractedText}</td>
+                            <td class="${rowColor}" style="display:none;">${originalDate}</td>
+                            <td class="${rowColor}" style="text-align:left;">${dateOnly}</td>
+                            <td class="${rowColorStatus}">${icon}</td>
                         `;
                         statusTbody.appendChild(row);
                         itemsProcessed++;
@@ -355,13 +400,20 @@
                                 $('.ipo_status_table').DataTable().destroy();
                             }
                             // Initialize DataTables
+                            // Update DataTable initialization with alternating row colors
                             $('.ipo_status_table').DataTable({
-                                "pageLength": 5,
-                                "lengthMenu": [5, 10, 15, 20],
-                                "order": [[4, "desc"]], // Sort by the hidden column (index 3) containing the original date
+                                'paging': false,
+                                'scrollCollapse': true,
+                                'scrollY': '200px',
+                                "order": [[4, "desc"]],
                                 "columnDefs": [
-                                    { "targets": [4], "visible": false } // Hide the original date column
-                                ]
+                                    { "targets": [3], "visible": false }
+                                ],
+                                "rowCallback": function(row, data, index) {
+                                    if (!$(row).find('td').hasClass('bg-success') && !$(row).find('td').hasClass('bg-danger')) {
+                                        $(row).css('background-color', index % 2 === 0 ? '#f8f9fa' : '#e9ecef');
+                                    }
+                                }
                             });
                         }
                     })
@@ -375,7 +427,11 @@
         })
         .catch(error => {
             console.error('Error fetching IPO status data:', error);
-            // alert('Failed to retrieve IPO status data.');
+            // Add a message to the container instead of an alert
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'alert alert-warning';
+            errorMessage.textContent = 'Unable to load IPO status data.';
+            container.appendChild(errorMessage);
         });
     }
     
