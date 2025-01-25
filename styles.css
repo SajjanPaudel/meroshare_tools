@@ -131,3 +131,49 @@
     border-color: #ffeeba;
     color: #856404;
 }
+.nav-tabs {
+    margin-bottom: 20px;
+}
+
+.tab-content {
+    padding: 20px;
+    width: 100%;
+}
+
+/* .tab-pane {
+    visibility: hidden;
+} */
+
+.tab-pane.show.active {
+    visibility: visible !important;
+}
+
+.nav-tabs {
+    margin-bottom: 20px;
+}
+
+.tab-content {
+    display: block;
+    width: 100%;
+}
+
+.tab-pane {
+    display: none;
+    width: 100%;
+}
+
+.tab-pane.fade.show.active {
+    display: block !important;
+    opacity: 1;
+}
+
+.main-content-container {
+    width: 100%;
+}
+
+.nav-tabs {
+    margin-bottom: 20px;
+}
+.nav-link {
+    cursor: pointer;
+}

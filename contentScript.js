@@ -157,15 +157,91 @@
     }
 
     // Function to create and insert content
+    // In createAndInsertContent function, update the tab switching logic
     function createAndInsertContent() {
         const container = document.createElement('div');
         container.className = 'main-content-container';
         
+        // Create tabs container
+        const tabsContainer = document.createElement('div');
+        tabsContainer.className = 'nav nav-tabs';
+        tabsContainer.innerHTML = `
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-target="#dashboard" type="button">Main Dashboard</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-target="#additional" type="button">Additional Info</button>
+            </li>
+        `;
+    
+        // Create tab content container
+        const tabContent = document.createElement('div');
+        tabContent.className = 'tab-content';
+    
+        // Main tab content
+        const mainTab = document.createElement('div');
+        mainTab.className = 'tab-pane fade show active';
+        mainTab.id = 'dashboard';
+    
         // Create a separate container for KPI cards
         const kpiSection = document.createElement('div');
         kpiSection.className = 'kpi-section';
-        container.appendChild(kpiSection);
+        mainTab.appendChild(kpiSection);
         kpicards(kpiSection);
+    
+        // Additional tab content
+        const additionalTab = document.createElement('div');
+        additionalTab.className = 'tab-pane fade';
+        additionalTab.id = 'additional';
+        additionalTab.style.cssText = 'background-color: red; min-height: 100vh; width: 100%;';
+    
+        // Add tabs and content to container
+        container.appendChild(tabsContainer);
+        tabContent.appendChild(mainTab);
+        tabContent.appendChild(additionalTab);
+        container.appendChild(tabContent);
+
+        // Insert container into DOM first
+        const fallbackView = document.querySelector('.fallback-view');
+        document.body.insertBefore(container, fallbackView);
+
+        // Initialize tab functionality
+        const tabs = container.querySelectorAll('.nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Get target ID and find the pane within our container
+                const targetId = tab.getAttribute('data-bs-target');
+                const targetPane = container.querySelector(targetId);
+                
+                // Remove active class from all tabs and panes
+                tabs.forEach(t => t.classList.remove('active'));
+                container.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Add show and active classes to target pane
+                if (targetPane) {
+                    targetPane.classList.add('show', 'active');
+                }
+                
+                // Reinitialize DataTables when switching back to main tab
+                if (targetId === '#dashboard') {
+                    setTimeout(() => {
+                        if ($.fn.DataTable.isDataTable('.issue-table')) {
+                            $('.issue-table').DataTable().columns.adjust();
+                        }
+                        if ($.fn.DataTable.isDataTable('.ipo_status_table')) {
+                            $('.ipo_status_table').DataTable().columns.adjust();
+                        }
+                    }, 100);
+                }
+            });
+        });
 
         const url = 'https://webbackend.cdsc.com.np/api/meroShare/companyShare/currentIssue';
         const payload = {
@@ -232,18 +308,9 @@
                 table.appendChild(tbody);
         
                 tableContainer.appendChild(table);
-                container.appendChild(tableContainer);
-        
-                const fallbackView = document.querySelector('.fallback-view');
-                document.body.insertBefore(container, fallbackView);
-                
-                // Check if DataTable is already initialized and destroy it
-                if ($.fn.DataTable.isDataTable('.issue-table')) {
-                    $('.issue-table').DataTable().destroy();
-                }
+                mainTab.appendChild(tableContainer);  // Changed from container to mainTab
                 
                 // Initialize DataTable
-                // In createAndInsertContent function, update the DataTable initialization:
                 $('.issue-table').DataTable({
                     'searching': false,
                     'paging': false,
@@ -261,7 +328,7 @@
                     'searching': false
                 });
                 
-                fetchAndPopulateIpoStatusTable(container);
+                fetchAndPopulateIpoStatusTable(mainTab);  // Changed from container to mainTab
             } 
             else {
                 alert('No current issues found.');
