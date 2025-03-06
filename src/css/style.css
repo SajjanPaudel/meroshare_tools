@@ -38,7 +38,7 @@
 
 .card-body {
   padding: 20px !important;
-  background: rgba(255, 255, 255, 0.8);
+  /* background: rgba(255, 255, 255, 0.8); */
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -143,12 +143,12 @@ thead {
 .kpi-container {
   margin-bottom: 20px;
 }
-
+/* 
 .card-body {
   padding: 15px !important;
   background: white;
   border-radius: 8px;
-}
+} */
 
 .card-title {
   background: #e9ecef;
