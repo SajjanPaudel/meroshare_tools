@@ -290,6 +290,7 @@
                         <th scope="col">Company Name</th>
                         <th scope="col">Type</th>
                         <th scope="col">Issue Close Date</th>
+                        <th scope="col">Action Date</th>
                     </tr>
                 `;
                 table.appendChild(thead);
@@ -297,11 +298,59 @@
                 const tbody = document.createElement('tbody');
                 data.object.forEach(issue => {
                     const row = document.createElement('tr');
+                    const applyButton = document.createElement('button');
+                    applyButton.className = 'btn btn-primary';
+                    applyButton.textContent = 'Apply';
+                    
+                    // Disable button if not Ordinary Shares or if reserved
+                    if (issue.shareTypeName !== 'IPO') {
+                        applyButton.disabled = true;
+                        applyButton.title = 'Not available for this share type';
+                        applyButton.style.opacity = '0.5';
+                        applyButton.style.cursor = 'not-allowed';
+                    }
+                    
+                    applyButton.addEventListener('click', async () => {
+                        try {
+                            // Get demat from ownDetail
+                            const authToken = sessionStorage.getItem('Authorization');
+                            const dematResponse = await fetch('https://webbackend.cdsc.com.np/api/meroShare/ownDetail/', {
+                                headers: {
+                                    'Authorization': `${authToken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            const dematData = await dematResponse.json();
+                            const demat = dematData.demat;
+
+                            // Check customer type
+                            const customerTypeResponse = await fetch(`https://webbackend.cdsc.com.np/api/meroShare/applicantForm/customerType/${issue.companyShareId}/${demat}`, {
+                                headers: {
+                                    'Authorization': `${authToken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            const customerTypeData = await customerTypeResponse.json();
+
+                            if (customerTypeData.status === 'ACCEPTED') {
+                                // Redirect to apply page
+                                window.location.href = `https://meroshare.cdsc.com.np/#/asba/apply/${issue.companyShareId}`;
+                            } else {
+                                alert('You are not eligible to apply for this IPO');
+                            }
+                        } catch (error) {
+                            console.error('Error applying for IPO:', error);
+                            alert('An error occurred while trying to apply');
+                        }
+                    });
+
                     row.innerHTML = `
                         <td>${issue.companyName}</td>
-                        <td>${issue.reservationTypeName}</td>
+                        <td>${issue.reservationTypeName ? issue.reservationTypeName : issue.shareGroupName}</td>
                         <td>${issue.issueCloseDate}</td>
+                        <td></td>
                     `;
+                    row.querySelector('td:last-child').appendChild(applyButton);
                     tbody.appendChild(row);
                 });
         

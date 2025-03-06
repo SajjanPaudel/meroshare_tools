@@ -6,7 +6,7 @@
 .main-content-container {
   position: absolute;
   padding: 24px;
-  top: 100px;
+  top: 61px;
   left: var(--container-left, 242px);
   background: rgba(250, 250, 250, 0.95);
   backdrop-filter: blur(20px);
