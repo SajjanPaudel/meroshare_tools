@@ -57,12 +57,13 @@
         })
         .then(data => {
             var demat = data.demat;
+            console.log(demat)
 
             const url = 'https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/';
             const payload = {
                 "sortBy": "script",
                 "demat": [demat],
-                "clientCode": "14500",
+                "clientCode": data.clientCode,
                 "page": 1,
                 "size": 200,
                 "sortAsc": true
